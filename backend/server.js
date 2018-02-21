@@ -61,4 +61,4 @@ router
 
 app.use(router.routes());
 
-if (!module.parent) app.listen(process.env.PORT || 3000);
+if (!module.parent) app.listen(process.env.PORT || 8080);
