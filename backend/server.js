@@ -4,13 +4,32 @@ const { extname } = path;
 const Koa = require('koa');
 const app = (module.exports = new Koa());
 const router = require('koa-router')();
+const proxy = require('koa-proxy');
+const superagent = require('superagent');
 const render = require('./libs/render');
 const stat = require('./libs/stat');
 
+const PRODUCTION = process.env.NODE_ENV === 'production';
+
+async function pipeToDev(ctx) {
+  const result = await superagent('http://localhost:3000' + ctx.path);
+  // console.log(ctx.path, result)
+  return result;
+}
+
+function injectIndexMeta(html) {
+  return html.replace('<body>', `<body><script>window.DATA = {data: 'meta'};</script>`);
+}
+
 async function index(ctx) {
-  const fpath = path.join(__dirname, '../frontend/build/index.html');
-  ctx.type = 'html';
-  ctx.body = fs.createReadStream(fpath);
+  if (PRODUCTION) {
+    const fpath = path.join(__dirname, '../frontend/build/index.html');
+    ctx.type = 'html';
+    ctx.body = fs.createReadStream(fpath);
+  } else {
+    const response = await pipeToDev(ctx);
+    ctx.body = injectIndexMeta(response.text);
+  }
 }
 
 async function jsBundle(ctx) {
@@ -40,10 +59,29 @@ app.use(render);
 
 router
   .get('/', index)
-  .get('/static/*', jsBundle)
   .get('/data', data)
   .post('/track', track);
 
-app.use(router.routes());
+async function dev(ctx) {
+  const response = await pipeToDev(ctx);
+  ctx.body = response.text;
+  ctx.type = extname(ctx.path);
+}
 
-if (!module.parent) app.listen(process.env.PORT || 3000);
+if (!PRODUCTION) {
+  // router.get('*', dev);
+  // router.get('*', proxy({
+  //   url: 'http://localhost:3000'
+  // }));
+} else {
+  // router.get('/static/*', jsBundle);
+}
+
+// app.use(router.routes());
+
+app.use(proxy({
+  url: 'http://localhost:3000',
+  map: path => path,
+}));
+
+if (!module.parent) app.listen(process.env.PORT || 8080);
