@@ -9,7 +9,13 @@ const render = require('./libs/render');
 const stat = require('./libs/stat');
 const cors = require('@koa/cors');
 
-const { getGroupedDurations, getAllActions, getAllSpaces, track } = require('./db');
+const {
+  getGroupedDurations,
+  getGroupedDurationsByDate,
+  getAllActions,
+  getAllSpaces,
+  track,
+} = require('./db');
 
 async function index(ctx) {
   const fpath = path.join(__dirname, '../frontend/build/index.html');
@@ -41,6 +47,14 @@ async function data(ctx) {
   ctx.body = { data };
 }
 
+async function handleDataByDate(ctx) {
+  const { action, spaceId } = ctx.request.query;
+  const data = await getGroupedDurationsByDate(action, spaceId);
+
+  ctx.status = 200;
+  ctx.body = { data };
+}
+
 async function metadata(ctx) {
   const actions = await getAllActions();
   const spaces = await getAllSpaces();
@@ -56,6 +70,7 @@ router
   .get('/', index)
   .get('/static/*', jsBundle)
   .get('/data', data)
+  .get('/dataByDate', handleDataByDate)
   .get('/metadata', metadata)
   .post('/track', handleTrack);
 

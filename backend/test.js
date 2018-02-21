@@ -46,20 +46,38 @@ describe('PB 5p33d', () => {
     request
       .get(`/data?action=${TEST_ACTION}`)
       .expect(200)
-      .expect({ data: [
-          { count: 1, duration: 1 }
-        ]
-      }, done);
+      .expect(
+        {
+          data: [{ count: 1, duration: 1 }],
+        },
+        done,
+      );
+  });
+
+  it('should serve graph data grouped by date', done => {
+    request
+      .get(`/dataByDate?action=${TEST_ACTION}`)
+      .expect(200)
+      .expect(
+        {
+          data: [
+            {
+              date: '2018-02-21',
+              median: 999,
+              p90: 999,
+              p95: 999,
+            },
+          ],
+        },
+        done,
+      );
   });
 
   it('should serve metadata', done => {
     request
       .get('/metadata')
       .expect(200)
-      .expect(
-        { actions: [TEST_ACTION], spaces: [{ id: 1 }] },
-        done,
-      );
+      .expect({ actions: [TEST_ACTION], spaces: [{ id: 1 }] }, done);
   });
 
   it('should reject non-existing routes', done => {

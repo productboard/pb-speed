@@ -35,6 +35,7 @@ const getMaxDurationForAction = async action => {
   const sql = 'SELECT max(duration) FROM logs WHERE action = $1';
   return pool.query(sql, [action]).then(res => res.rows[0].max);
 };
+
 const getGroupedDurations = async (action, spaceId) => {
   const spaceIdCondition = spaceId ? 'AND space_id = $2' : '';
   const sql = `
