@@ -36,13 +36,17 @@ const getMaxDurationForAction = async action => {
   return pool.query(sql, [action]).then(res => res.rows[0].max);
 };
 const getGroupedDurations = async (action, spaceId) => {
+  const spaceIdCondition = spaceId ? 'AND space_id = $2' : '';
   const sql = `
     SELECT
       count(id), round(duration, -3) AS rounded_duration
     FROM logs
-    WHERE action = $1 GROUP BY rounded_duration
-   `;
-  return pool.query(sql, [action]).then(res =>
+    WHERE action = $1 ${spaceIdCondition} GROUP BY rounded_duration
+  `;
+
+  const params = spaceId ? [action, spaceId] : [action];
+
+  return pool.query(sql, params).then(res =>
     res.rows.map(row => ({
       label: parseInt(row.rounded_duration) / 1000,
       count: parseInt(row.count),
