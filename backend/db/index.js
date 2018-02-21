@@ -21,13 +21,27 @@ const getRecordsByAction = async action => {
   return pool.query(sql, [action]).then(res => res.rows);
 };
 
+const getAllActions = async () => {
+  const sql = 'SELECT DISTINCT action from logs;';
+  return pool.query(sql).then(res => res.rows.map(row => row.action));
+};
+
+const getAllSpaces = async () => {
+  const sql = 'SELECT DISTINCT space_id from logs;';
+  return pool.query(sql).then(res => res.rows.map(row => ({ id: row.space_id })));
+};
+
 const getMaxDurationForAction = async action => {
   const sql = 'SELECT max(duration) FROM logs WHERE action = $1';
   return pool.query(sql, [action]).then(res => res.rows[0].max);
 };
-const getDurationsForAction = async action => {
-  const sql =
-    'SELECT count(id), round(duration, -3) AS rounded_duration FROM logs WHERE action = $1 GROUP BY rounded_duration';
+const getGroupedDurations = async (action, spaceId) => {
+  const sql = `
+    SELECT
+      count(id), round(duration, -3) AS rounded_duration
+    FROM logs
+    WHERE action = $1 GROUP BY rounded_duration
+   `;
   return pool.query(sql, [action]).then(res =>
     res.rows.map(row => ({
       label: parseInt(row.rounded_duration) / 1000,
@@ -41,6 +55,8 @@ module.exports = {
   track,
   getRecord,
   getRecordsByAction,
-  getDurationsForAction,
+  getGroupedDurations,
   getMaxDurationForAction,
+  getAllActions,
+  getAllSpaces,
 };
