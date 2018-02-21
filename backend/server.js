@@ -7,6 +7,7 @@ const app = (module.exports = new Koa());
 const router = require('koa-router')();
 const render = require('./libs/render');
 const stat = require('./libs/stat');
+const cors = require('@koa/cors');
 
 const { getGroupedDurations, getAllActions, getAllSpaces, track } = require('./db');
 
@@ -47,6 +48,7 @@ async function metadata(ctx) {
   ctx.body = { actions, spaces };
 }
 
+app.use(cors());
 app.use(koaBody());
 app.use(render);
 
