@@ -2,7 +2,7 @@ const app = require('./server');
 const server = app.listen();
 const request = require('supertest').agent(server);
 
-describe('Hello World', () => {
+describe('PB 5p33d', () => {
   after(() => {
     server.close();
   });
@@ -12,8 +12,21 @@ describe('Hello World', () => {
       .get('/')
       .expect(200)
       .expect(res => {
-        if (!res.text.includes('<html')) throw new Error('No <html> returned');
-        if (!res.text.includes('<html')) throw new Error('No <body> returned');
+        if (!res.text.includes('<html'))
+          throw new Error('No <html> returned');
+        if (!res.text.includes('<html'))
+          throw new Error('No <body> returned');
+      })
+      .end(done);
+  });
+
+  it('should serve SPA javascript bundle', done => {
+    request
+      .get('/static/js/main.60e3476d.js')
+      .expect(200)
+      .expect(res => {
+        if (!res.text.includes('!function('))
+          throw new Error('App JS bundle not served');
       })
       .end(done);
   });

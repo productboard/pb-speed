@@ -1,10 +1,25 @@
+const fs = require('fs');
+const path = require('path');
+const { extname } = path;
 const Koa = require('koa');
 const app = (module.exports = new Koa());
 const router = require('koa-router')();
 const render = require('./libs/render');
+const stat = require('./libs/stat');
 
 async function index(ctx) {
   await ctx.render('index');
+}
+
+async function jsBundle(ctx) {
+  // const fpath = path.join(__dirname, ctx.path);
+  const fpath = path.join(__dirname, '../frontend/build', ctx.path);
+  console.log(fpath)
+  const fstat = await stat(fpath);
+  if (fstat.isFile()) {
+    ctx.type = extname(fpath);
+    ctx.body = fs.createReadStream(fpath);
+  }
 }
 
 async function track(ctx) {
@@ -25,6 +40,7 @@ app.use(render);
 
 router
   .get('/', index)
+  .get('/static/*', jsBundle)
   .get('/data', data)
   .post('/track', track);
 
