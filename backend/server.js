@@ -8,7 +8,7 @@ const router = require('koa-router')();
 const render = require('./libs/render');
 const stat = require('./libs/stat');
 
-const { getGroupedDurations, track } = require('./db');
+const { getGroupedDurations, getAllActions, getAllSpaces, track } = require('./db');
 
 async function index(ctx) {
   const fpath = path.join(__dirname, '../frontend/build/index.html');
@@ -39,6 +39,13 @@ async function data(ctx) {
   ctx.body = { data };
 }
 
+async function metadata(ctx) {
+  const actions = await getAllActions();
+  const spaces = await getAllSpaces();
+  ctx.status = 200;
+  ctx.body = { actions, spaces };
+}
+
 app.use(koaBody());
 app.use(render);
 
@@ -46,6 +53,7 @@ router
   .get('/', index)
   .get('/static/*', jsBundle)
   .get('/data', data)
+  .get('/metadata', metadata)
   .post('/track', handleTrack);
 
 app.use(router.routes());

@@ -33,7 +33,7 @@ describe('PB 5p33d', () => {
     request
       .post('/track')
       .set('Content-Type', 'application/json')
-      .send({ userId: 123, space_id: 1 })
+      .send({ userId: 123, spaceId: 2, action: 'trololo2' })
       .expect(201)
       .expect({ ok: true }, done);
   });
@@ -43,6 +43,16 @@ describe('PB 5p33d', () => {
       .get('/data?action=test')
       .expect(200)
       .expect({ data: [{ id: 1, value: 2, time: 123456789 }] }, done);
+  });
+
+  it('should serve metadata', done => {
+    request
+      .get('/metadata')
+      .expect(200)
+      .expect(
+        { actions: ['trololo', 'trololo2'], spaces: [{ id: 1 }, { id: 2 }] },
+        done,
+      );
   });
 
   it('should reject non-existing routes', done => {
