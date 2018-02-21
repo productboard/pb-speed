@@ -34,6 +34,8 @@
   "scripts": {
     "test": "DATABASE_URL=postgres://localhost:5432/pbspeed_test mocha backend/test.js",
     "watch": "DATABASE_URL=postgres://localhost:5432/pbspeed_test mocha -w backend/test.js",
+    "test:db": "DATABASE_URL=postgres://localhost:5432/pbspeed_test mocha backend/db/db-test.js",
+    "watch:db": "DATABASE_URL=postgres://localhost:5432/pbspeed_test mocha -w backend/db/db-test.js",
     "start": "node ./backend/server.js"
   },
   "engines": {
