@@ -1,4 +1,5 @@
 CREATE DATABASE pbspeed;
+CREATE DATABASE pbspeed_test;
 
 CREATE EXTENSION pgcrypto;
 CREATE TABLE logs (
