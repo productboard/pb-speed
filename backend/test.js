@@ -11,7 +11,11 @@ describe('Hello World', () => {
     request
       .get('/')
       .expect(200)
-      .expect('<html />', done);
+      .expect(res => {
+        if (!res.text.includes('<html')) throw new Error('No <html> returned');
+        if (!res.text.includes('<html')) throw new Error('No <body> returned');
+      })
+      .end(done);
   });
 
   it('should serve graph data', done => {

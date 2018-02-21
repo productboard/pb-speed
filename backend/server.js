@@ -1,9 +1,10 @@
 const Koa = require('koa');
 const app = (module.exports = new Koa());
 const router = require('koa-router')();
+const render = require('./libs/render');
 
 async function index(ctx) {
-  ctx.body = '<html />';
+  await ctx.render('index');
 }
 
 async function track(ctx) {
@@ -19,6 +20,8 @@ async function data(ctx) {
     ]
   }
 }
+
+app.use(render);
 
 router
   .get('/', index)
