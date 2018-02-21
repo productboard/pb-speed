@@ -32,7 +32,6 @@
   "scripts": {
     "test": "mocha backend/test.js",
     "watch": "mocha -w backend/test.js",
-    "prestart": "cd ./frontend && yarn install && node ./scripts/build.js",
     "start": "node ./backend/server.js"
   },
   "engines": {
