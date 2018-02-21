@@ -48,7 +48,7 @@ const getGroupedDurations = async (action, spaceId) => {
 
   return pool.query(sql, params).then(res =>
     res.rows.map(row => ({
-      label: parseInt(row.rounded_duration) / 1000,
+      duration: parseInt(row.rounded_duration) / 1000,
       count: parseInt(row.count),
     })),
   );

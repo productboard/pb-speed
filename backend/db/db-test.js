@@ -60,11 +60,17 @@ describe('database layer', () => {
 
   it('groupes durations for action', async () => {
     const result = await getGroupedDurations(TEST_ACTION);
-    assert.deepEqual(result.find(row => row.label === 1), { label: 1, count: 3 });
+    assert.deepEqual(result.find(row => row.duration === 1), {
+      duration: 1,
+      count: 3,
+    });
   });
 
   it('groupes durations for action and spaceId', async () => {
     const result = await getGroupedDurations(TEST_ACTION, 2);
-    assert.deepEqual(result.find(row => row.label === 1), { label: 1, count: 1 });
+    assert.deepEqual(result.find(row => row.duration === 1), {
+      duration: 1,
+      count: 1,
+    });
   });
 });
