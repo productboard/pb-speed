@@ -11,10 +11,10 @@ class App extends React.Component {
       <div className="App">
         <DistributionChart
           chartData={[
-            { count: 1, label: '0.1s' },
-            { count: 5, label: '0.2s' },
-            { count: 7, label: '0.3s' },
-            { count: 4, label: '0.4s' },
+            { count: 1, duration: 3 },
+            { count: 5, duration: 12 },
+            { count: 7, duration: 22 },
+            { count: 4, duration: 17 },
           ]}
         />
         <OverviewChart />
