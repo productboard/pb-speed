@@ -8,13 +8,13 @@ const render = require('./libs/render');
 const stat = require('./libs/stat');
 
 async function index(ctx) {
-  await ctx.render('index');
+  const fpath = path.join(__dirname, '../frontend/build/index.html');
+  ctx.type = 'html';
+  ctx.body = fs.createReadStream(fpath);
 }
 
 async function jsBundle(ctx) {
-  // const fpath = path.join(__dirname, ctx.path);
   const fpath = path.join(__dirname, '../frontend/build', ctx.path);
-  console.log(fpath)
   const fstat = await stat(fpath);
   if (fstat.isFile()) {
     ctx.type = extname(fpath);
