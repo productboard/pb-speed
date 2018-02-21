@@ -1,6 +1,6 @@
 import { observable, action } from 'mobx';
-type TAction = string;
-type TSpace = { id: number; name: string };
+export type TAction = string;
+export type TSpace = { id: number; name: string };
 
 class MetadataStore {
   @observable actions: Array<TAction> = [];

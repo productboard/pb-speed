@@ -1,5 +1,7 @@
 import * as React from 'react';
 import './App.css';
+
+import Filter from './components/Filter';
 import DistributionChart from './components/DistributionChart';
 import OverviewChart from './components/OverviewChart';
 
@@ -9,6 +11,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
+        <Filter />
         <DistributionChart
           chartData={[
             { count: 1, duration: 3 },
