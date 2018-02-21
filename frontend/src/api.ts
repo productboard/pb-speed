@@ -21,3 +21,12 @@ export const trackAction = (data: { action: string; duration: number }) => {
     },
   });
 };
+
+export const getData = ({
+  action,
+  spaceId,
+}: {
+  action: string;
+  spaceId: number | null;
+}) =>
+  fetch(`${BE_URL}/data?action=${action}${spaceId ? `&spaceId=${spaceId}` : ''}`).then(r => r.json());

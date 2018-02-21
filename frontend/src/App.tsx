@@ -1,5 +1,9 @@
 import * as React from 'react';
 import './App.css';
+import { autorun } from 'mobx';
+import { getData } from './api';
+
+import FilterStore from './stores/FilterStore';
 
 import Filter from './components/Filter';
 import DistributionChart from './components/DistributionChart';
@@ -8,17 +12,29 @@ import OverviewChart from './components/OverviewChart';
 const logo = require('./logo.svg');
 
 class App extends React.Component {
+  state = { data: [] };
+
+  constructor(props: any) {
+    super(props);
+
+    autorun(() => {
+      if (!FilterStore.action) {
+        return;
+      }
+
+      getData({
+        action: FilterStore.action,
+        spaceId: FilterStore.spaceId,
+      }).then(({ data }) => this.setState({data}));
+    });
+  }
+
   render() {
     return (
       <div className="App">
         <Filter />
         <DistributionChart
-          chartData={[
-            { count: 1, duration: 3 },
-            { count: 5, duration: 12 },
-            { count: 7, duration: 22 },
-            { count: 4, duration: 17 },
-          ]}
+          chartData={this.state.data}
         />
         <OverviewChart />
         <header className="App-header">
