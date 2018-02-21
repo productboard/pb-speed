@@ -13,11 +13,6 @@ const {
 
 const TEST_ACTION = 'MOCHA_TEST';
 
-const deleteAllTestLogs = async () => {
-  const sql = 'DELETE FROM logs WHERE action = $1;';
-  return pool.query(sql, [TEST_ACTION]);
-};
-
 describe('database layer', () => {
   beforeEach(async () => {
     await track({ userId: 1, spaceId: 1, action: TEST_ACTION, duration: 888 });

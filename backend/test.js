@@ -1,10 +1,14 @@
 const app = require('./server');
 const server = app.listen();
 const request = require('supertest').agent(server);
+const { deleteAllTestLogs } = require('./libs/test');
+
+const TEST_ACTION = 'MOCHA_TEST';
 
 describe('PB 5p33d', () => {
   after(() => {
     server.close();
+    deleteAllTestLogs();
   });
 
   it('should serve SPA', done => {
@@ -33,16 +37,19 @@ describe('PB 5p33d', () => {
     request
       .post('/track')
       .set('Content-Type', 'application/json')
-      .send({ userId: 123, spaceId: 2, action: 'trololo2' })
+      .send({ userId: 123, spaceId: 1, action: TEST_ACTION, duration: 999 })
       .expect(201)
       .expect({ ok: true }, done);
   });
 
   it('should serve graph data', done => {
     request
-      .get('/data?action=test')
+      .get(`/data?action=${TEST_ACTION}`)
       .expect(200)
-      .expect({ data: [{ id: 1, value: 2, time: 123456789 }] }, done);
+      .expect({ data: [
+          { count: 1, duration: 1 }
+        ]
+      }, done);
   });
 
   it('should serve metadata', done => {
@@ -50,7 +57,7 @@ describe('PB 5p33d', () => {
       .get('/metadata')
       .expect(200)
       .expect(
-        { actions: ['trololo', 'trololo2'], spaces: [{ id: 1 }, { id: 2 }] },
+        { actions: [TEST_ACTION], spaces: [{ id: 1 }] },
         done,
       );
   });

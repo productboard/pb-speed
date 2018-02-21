@@ -35,6 +35,7 @@ async function handleTrack(ctx) {
 async function data(ctx) {
   const { action, spaceId } = ctx.request.query;
   const data = await getGroupedDurations(action, spaceId);
+  console.log(action, spaceId, data)
   ctx.status = 200;
   ctx.body = { data };
 }
