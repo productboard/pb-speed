@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './App.css';
-import DistributionChart from './charts/DistributionChart';
-import OverviewChart from './charts/OverviewChart';
+import DistributionChart from './components/DistributionChart';
+import OverviewChart from './components/OverviewChart';
 
 const logo = require('./logo.svg');
 
