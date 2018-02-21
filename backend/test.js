@@ -7,10 +7,10 @@ describe('Hello World', function() {
     server.close();
   });
 
-  it('should say "Hello World"', function(done) {
+  it('should serve SPA', function(done) {
     request
       .get('/')
       .expect(200)
-      .expect('Hello World', done);
+      .expect('<html />', done);
   });
 });

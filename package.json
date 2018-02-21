@@ -29,7 +29,8 @@
     "supertest": "^3.0.0"
   },
   "scripts": {
-    "test": "make test"
+    "test": "mocha backend/test.js",
+    "watch": "mocha -w backend/test.js"
   },
   "engines": {
     "node": ">= 7.6"
