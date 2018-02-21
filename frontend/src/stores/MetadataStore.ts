@@ -7,16 +7,16 @@ class MetadataStore {
   @observable spaces: Array<TSpace> = [];
 
   @action
-  setMetadata({
+  setMetadata = ({
     actions,
     spaces,
   }: {
     actions: MetadataStore['actions'];
     spaces: MetadataStore['spaces'];
-  }) {
+  }) => {
     this.actions = actions;
     this.spaces = spaces;
-  }
+  };
 }
 
 export default new MetadataStore();
