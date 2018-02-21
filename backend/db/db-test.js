@@ -9,7 +9,9 @@ const {
   getMaxDurationForAction,
   getAllActions,
   getAllSpaces,
+  getGroupedDurationsByDate,
 } = require('../db');
+const { deleteAllTestLogs } = require('../libs/test');
 
 const TEST_ACTION = 'MOCHA_TEST';
 
@@ -32,7 +34,7 @@ describe('database layer', () => {
 
   it('returns all spaces', async () => {
     const actions = await getAllSpaces();
-    assert.deepEqual(actions, [{ id: 1 }, { id: 2 }]);
+    assert.deepEqual(actions.sort((a, b) => a.id - b.id), [{ id: 1 }, { id: 2 }]);
   });
 
   it('stores and fetches stuff', async () => {
@@ -68,4 +70,25 @@ describe('database layer', () => {
       count: 1,
     });
   });
+
+  it('groupes durations for date', async () => {
+    const result = await getGroupedDurationsByDate(TEST_ACTION);
+    assert.deepEqual(result.find(row => row.date === '2018-02-21'), {
+      date: '2018-02-21',
+      median: 1355.5,
+      p90: 1995.2,
+      p95: 2108.6,
+    });
+  });
+
+  it('groupes durations for date and spaceId', async () => {
+    const result = await getGroupedDurationsByDate(TEST_ACTION, 2);
+    assert.deepEqual(result.find(row => row.date === '2018-02-21'), {
+      date: '2018-02-21',
+      median: 1844,
+      p90: 2146.4,
+      p95: 2184.2,
+    });
+  });
+
 });

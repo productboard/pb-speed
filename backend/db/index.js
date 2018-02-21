@@ -54,6 +54,23 @@ const getGroupedDurations = async (action, spaceId) => {
   );
 };
 
+const getGroupedDurationsByDate = async (action, spaceId) => {
+  const spaceIdCondition = spaceId ? 'AND space_id = $2' : '';
+  const sql = `
+    SELECT
+      --count(id),
+      percentile_cont(0.5) within group ( order by duration ) AS median,
+      percentile_cont(0.9) within group ( order by duration ) AS p90,
+      percentile_cont(0.95) within group ( order by duration ) AS p95,
+      to_char(date(created_at), 'YYYY-MM-DD') AS date
+    FROM logs
+    WHERE action = $1 ${spaceIdCondition} GROUP BY date
+  `;
+
+  const params = spaceId ? [action, spaceId] : [action];
+  return pool.query(sql, params).then(res => res.rows);
+};
+
 module.exports = {
   pool,
   track,
@@ -63,4 +80,5 @@ module.exports = {
   getMaxDurationForAction,
   getAllActions,
   getAllSpaces,
+  getGroupedDurationsByDate,
 };
